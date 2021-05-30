@@ -1,0 +1,15 @@
+{
+    "hostname" : "localhost",
+    "username" : "root",
+    "password" : "",
+    "nome_database" : "testweb",
+    "tb_trasmissioni" : "tab1",
+    "tb_letture" : "webpage",
+    "tb_endnode" : "tab2",
+
+    "id_gateway" : "12",
+    "porta_seriale" : "COM3"
+}
+
+
+

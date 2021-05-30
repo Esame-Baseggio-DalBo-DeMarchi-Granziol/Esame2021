@@ -1,0 +1,33 @@
+{
+  "AM2315": "enable",
+  "BME280": "enable",
+  "PM_Sensor": "enable",
+  "ADS1115_1": "enable",
+  "ADS1115_2": "enable",
+  "LSM9DS1": "enable",
+  "Sen0186": "enable",
+
+  "temp_ext": "enable",
+  "umidita_ext": "enable",
+  "temp_int": "enable",
+  "umidita_int": "enable",
+  "pressione": "enable",
+  "pm1": "enable",
+  "pm2_5": "enable",
+  "pm10": "enable",
+  "ozono1": "enable",
+  "OZO_12": "disable",
+  "ozono2": "enable",
+  "OZO_22": "disable",
+  "ozono3": "enable",
+  "OZO_32": "disable",
+  "ozono4": "enable",
+  "OZO_42": "disable",
+  "giroscopio": "enable",
+  "accellerometro": "enable",
+  "magnetometro": "enable",
+  "direzione_vento": "enable",
+  "velocita_vento": "enable",
+  "quantita_pioggia": "enable"
+}
+
