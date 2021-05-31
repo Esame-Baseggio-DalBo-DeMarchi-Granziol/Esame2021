@@ -1,7 +1,7 @@
 {
     "hostname" : "localhost",
-    "username" : "root",
-    "password" : "",
+    "username" : "your_user",
+    "password" : "your_password",
     "nome_database" : "testweb",
     "tb_trasmissioni" : "tab1",
     "tb_letture" : "webpage",
