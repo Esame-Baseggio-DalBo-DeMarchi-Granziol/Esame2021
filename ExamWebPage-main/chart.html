@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Area Chart - Datetime X-Axis</title>
+
+  <link href="./libs/samples/assets/styles.css" rel="stylesheet" />
+
+  <style>
+    #chart {
+      max-width: 650px;
+      margin: 35px auto;
+    }
+
+    .toolbar {
+      margin-left: 45px;
+    }
+
+    button {
+      background: #fff;
+      color: #222;
+      border: 1px solid #e7e7e7;
+      border-bottom: 2px solid #ddd;
+      border-radius: 2px;
+      padding: 4px 17px;
+    }
+
+    button.active {
+      color: #fff;
+      background: #008FFB;
+      border: 1px solid blue;
+      border-bottom: 2px solid blue;
+    }
+
+    button:focus {
+      outline: 0;
+    }
+  </style>
+  <script src="./libs/dist/apexcharts.js"></script>
+</head>
+
+<body>
+
+  <!--<div id="chart-line"></div>-->
+  <div id="chart-line2"></div>
+  <div id="chart-line" style="height: 600px"></div>
+
+  <script src="./templatechart.js"></script>
+  <script>
+
+    var color = [
+      "rgba(0, 0, 0, 1)",
+      "rgba(255, 0, 0, 1)",
+      "rgba(0, 255, 0, 1)",
+      "rgba(0, 0, 255, 1)",
+      "rgba(255, 255, 0, 1)",
+      "rgba(0, 255, 255, 1)",
+      "rgba(255, 0, 255, 1)",
+      "rgba(192, 192, 192, 1)",
+      "rgba(128, 128, 128, 1)",
+      "rgba(128, 0, 0, 1)",
+      "rgba(128, 128, 0, 1)",
+      "rgba(0, 128, 0, 1)",
+      "rgba(128, 0, 128, 1)",
+      "rgba(0, 128, 128, 1)",
+      "rgba(0, 0, 128, 1)",
+      "rgba(54, 33, 128, 1)"
+    ];
+
+
+    function requestData(_query_) {
+      var data;
+      var params = JSON.stringify({ query: _query_ });
+      var xhttp = new XMLHttpRequest();
+      xhttp.open("POST", "data.php", false);
+      xhttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          data = this.responseText;
+          data = JSON.parse(data);
+        }
+      }
+      xhttp.send(params);
+      return data;
+    }
+
+    function getData(dato, query) {
+      var r = [];
+      var temp = requestData(query);
+      for (var i in temp) {
+        r[i] = parseFloat(temp[i][dato]);
+      }
+      return r;
+    }
+
+    function getParameterURL(paramter) {
+      let url = new URL(window.location.href);
+      if (url.searchParams.has(paramter)) {
+
+        return url.searchParams.get(paramter);
+      }
+    }
+
+    var end = [];
+    var data = [];
+    var type_inf;
+    var gate;
+    var data_got = [];
+    var dbpage;
+
+    if (getParameterURL("id_gate") == undefined) console.log("ERROR: undefined gateway");
+    else gate = getParameterURL("id_gate");
+
+    if (getParameterURL("type") == undefined) conxole.log("ERROR: undefined ");
+    else type_inf = getParameterURL("type");
+
+    if (getParameterURL("id_end") == undefined) end = requestData("SELECT DISTINCT id_end FROM webpage WHERE id_gate=" + gate + " ORDER BY id_end");
+    else end[0] = { id_end: getParameterURL("id_end") };
+
+    if (getParameterURL("dbpage") == undefined) console.log("ERROR: dbpage undefined");
+    else dbpage = getParameterURL("dbpage");
+
+
+    var temp = [];
+    for (var i in end) {
+      temp[i] = [];
+      data[i] = requestData("SELECT datatime,id_end," + type_inf + " FROM " + dbpage + " WHERE id_gate=" + gate + " AND id_end=" + end[i].id_end + " ORDER BY id_end,datatime LIMIT 1000");
+      data_got[i] = requestData("SELECT datatime," + type_inf + " FROM " + dbpage + " WHERE id_gate=" + gate + " AND id_end=" + end[i].id_end + " ORDER BY id_end,datatime LIMIT 1000");
+      for (var d in data_got[i]) {
+        temp[i].push({ x: data_got[i][d].datatime, y: data_got[i][d][type_inf.toString()] });
+      }
+
+    }
+
+
+
+
+    console.log(temp);
+    var dataset = [];
+    for (var e in end) {
+      dataset[e] = {
+        name: "id: " + end[e].id_end,
+        data: temp[e],
+        color: color[e]
+      }
+    }
+
+    console.log(dataset);
+
+    selectchart(dataset, type_inf);
+  </script>
+  </div>
+</body>
+
+</html>

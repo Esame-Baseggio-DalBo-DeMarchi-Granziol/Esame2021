@@ -1,0 +1,96 @@
+td{
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.chart:hover {
+    background: rgb(233 233 233);
+    cursor: pointer;
+}
+
+th{
+    padding-top: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 15px;
+}
+
+.header:hover{
+    background: rgb(47 16 219);
+}
+
+#id_header{
+    cursor: auto;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+table{
+    user-select: none;
+}
+
+.chart{
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px;
+    border: black 2px solid;
+    border-radius: 10px;  
+}
+
+.cella{
+    min-width: 180px;
+    height: 140px;
+}
+
+.id{
+    text-align: center;
+    font-weight: bold;
+    min-width: 50px;
+}
+
+.cella.id {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+body{
+    margin: 0px;
+}
+
+.header{
+    border: black 2px solid;
+    background: rgb(39 0 255);
+    color: white;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    cursor: pointer;
+    border-radius: 10px;
+    
+}
+
+.immagine {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-position: 0.35px 0.5px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+ 
+.vento{
+    height: 140px;
+    width: 140px;
+    box-sizing: border-box;
+    padding: 5px;
+    border: black 2px solid;
+    border-radius: 10px; 
+    
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    background-image: url('./immagini/rosa-dei-venti-esterno.png');
+    background-size: 100% 100%;
+}
