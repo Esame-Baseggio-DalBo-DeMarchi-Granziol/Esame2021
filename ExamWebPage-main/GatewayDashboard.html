@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Sparklines</title>
+
+    <link href="./libs/samples/assets/styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./bello.css" type="text/css">
+    <script src="./libs/dist/apexcharts.js"></script>
+    <script src="./function.js"></script>
+</head>
+
+<body>
+    <div class="row">
+        <table>
+            <thead style="text-align: center;">
+                <th id="id_header"></th>
+                <th>
+                    <div class="header" onclick="window.open('./chart.html?id_gate='+gate+'&type=RSSI&dbpage=tab1')">
+                        RSSI
+                    </div>
+                </th>
+                <th>
+                    <div class="header" onclick="window.open('./chart.html?id_gate='+gate+'&type=SN&dbpage=tab1')">
+                        SN
+                    </div>
+                </th>
+                <th>
+                    <div class="header"
+                        onclick="window.open('./chart.html?id_gate='+gate+'&type=temperatura_interna_media&dbpage=webpage')">
+                        Temperature Int
+                    </div>
+                </th>
+                <th>
+                    <div class="header"
+                        onclick="window.open('./chart.html?id_gate='+gate+'&type=temperatura_esterna_media&dbpage=webpage')">
+                        Temperature Ext
+                    </div>
+                </th>
+                <th>
+                    <div class="header"
+                        onclick="window.open('./chart.html?id_gate='+gate+'&type=umidita_interna_media&dbpage=webpage')">
+                        Humidity Int
+                    </div>
+                </th>
+                <th>
+                    <div class="header"
+                        onclick="window.open('./chart.html?id_gate='+gate+'&type=umidita_esterna_media&dbpage=webpage')">
+                        Humidity Ext
+                    </div>
+                </th>
+                <th>
+                    <div class="header"
+                        onclick="window.open('./chart.html?id_gate='+gate+'&type=pressione_media&dbpage=webpage')">
+                        Pressure
+                    </div>
+                </th>
+                <th>
+                    <div class="header"
+                        onclick="window.open('./chart.html?id_gate='+gate+'&type=pm1_media&dbpage=webpage')">
+                        PM 1
+                    </div>
+                </th>
+                <th>
+                    <div class="header"
+                        onclick="window.open('./chart.html?id_gate='+gate+'&type=pm2_5_media&dbpage=webpage')">
+                        PM 2.5
+                    </div>
+                </th>
+                <th>
+                    <div class="header"
+                        onclick="window.open('./chart.html?id_gate='+gate+'&type=pm10_media&dbpage=webpage')">
+                        PM 10
+                    </div>
+                </th>
+                <th>
+                    <div class="header"
+                        onclick="window.open('./chart.html?id_gate='+gate+'&type=ozono1_media&dbpage=webpage')">
+                        Ozone
+                    </div>
+                </th>
+                <th>
+                    <div class="header"
+                        onclick="window.open('./chart.html?id_gate='+gate+'&type=velocità_del_vento_media&dbpage=webpage')">
+                        Rainfall
+                    </div>
+                </th>
+                <th>
+                    <div class="header"
+                        onclick="window.open('./chart.html?id_gate='+gate+'&type=direzione_del_vento_media&dbpage=webpage')">
+                        Wind Direction
+                    </div>
+                </th>
+                <th>
+                    <div class="header"
+                        onclick="window.open('./chart.html?id_gate='+gate+'&type=quantità_di_pioggia_media&dbpage=webpage')">
+                        Wind Speed
+                    </div>
+                </th>
+            </thead>
+            <tbody id="tablebody">
+
+            </tbody>
+        </table>
+    </div>
+    </div>
+
+
+    <script>
+        var chart_color = ["#ff0000", "#ff0000", "#0000ff", "#0000ff", "#ff0000", "#ff0000", "#0000ff", "#ff0000", "#ff0000", "#ff0000", "#0000ff", "#ff0000", "#0000ff", "#0000ff"];
+
+        var gate = getParameterURL("id");
+        var dict = [];
+        var end = requestData("SELECT DISTINCT id_end FROM webpage WHERE id_gate=" + gate + " ORDER BY id_end");
+        var dateUTcnow = ("'" + new Date(Date.now()).getUTCFullYear() + "-" + (new Date(Date.now()).getUTCMonth() + 1) + "-" + (new Date(Date.now()).getUTCDate() - 1) + " " + (new Date(Date.now()).getUTCHours()) + ":" + new Date(Date.now()).getUTCMinutes() + ":" + new Date(Date.now()).getUTCSeconds() + "'");
+        var options = [];
+        var chart = [];
+
+        for (var k in end) {
+            var string = "";
+            string += "<tr>";
+            string += "<td class=\"cella id\"><div class=\"id\" onclick=\"window.open('./dashboard.html')\">ID " + end[k].id_end + "</td>";
+            string += "<td class=\"cella\">  <div  class=\"chart\"    id=\"chart_" + gate + "_" + end[k].id_end + "_" + "RSSI\"     onclick=\"window.open('./chart.html?id_gate=" + gate + "&id_end=" + end[k].id_end + "&type=RSSI&dbpage=tab1" + "\')      \"></div></td>";
+            string += "<td class=\"cella\">  <div  class=\"chart\"    id=\"chart_" + gate + "_" + end[k].id_end + "_" + "SN\"     onclick=\"window.open('./chart.html?id_gate=" + gate + "&id_end=" + end[k].id_end + "&type=SN&dbpage=tab1" + "\')      \"></div></td>";
+            string += "<td class=\"cella\">  <div  class=\"chart\"    id=\"chart_" + gate + "_" + end[k].id_end + "_" + "temperatura_interna_media\"     onclick=\"window.open('./chart.html?id_gate=" + gate + "&id_end=" + end[k].id_end + "&type=temperatura_interna_media&dbpage=webpage" + "\')      \"></div></td>";
+            string += "<td class=\"cella\">  <div  class=\"chart\"    id=\"chart_" + gate + "_" + end[k].id_end + "_" + "temperatura_esterna_media\"     onclick=\"window.open('./chart.html?id_gate=" + gate + "&id_end=" + end[k].id_end + "&type=temperatura_esterna_media&dbpage=webpage" + "\')      \"></div></td>";
+            string += "<td class=\"cella\">  <div  class=\"chart\"    id=\"chart_" + gate + "_" + end[k].id_end + "_" + "umidita_interna_media\"         onclick=\"window.open('./chart.html?id_gate=" + gate + "&id_end=" + end[k].id_end + "&type=umidita_interna_media&dbpage=webpage" + "\')          \"></div></td>";
+            string += "<td class=\"cella\">  <div  class=\"chart\"    id=\"chart_" + gate + "_" + end[k].id_end + "_" + "umidita_esterna_media\"         onclick=\"window.open('./chart.html?id_gate=" + gate + "&id_end=" + end[k].id_end + "&type=umidita_esterna_media&dbpage=webpage" + "\')          \"></div></td>";
+            string += "<td class=\"cella\">  <div  class=\"chart\"    id=\"chart_" + gate + "_" + end[k].id_end + "_" + "pressione_media\"               onclick=\"window.open('./chart.html?id_gate=" + gate + "&id_end=" + end[k].id_end + "&type=pressione_media&dbpage=webpage" + "\')                \"></div></td>";
+            string += "<td class=\"cella\">  <div  class=\"chart\"    id=\"chart_" + gate + "_" + end[k].id_end + "_" + "pm1_media\"                     onclick=\"window.open('./chart.html?id_gate=" + gate + "&id_end=" + end[k].id_end + "&type=pm1_media&dbpage=webpage" + "\')                      \"></div></td>";
+            string += "<td class=\"cella\">  <div  class=\"chart\"    id=\"chart_" + gate + "_" + end[k].id_end + "_" + "pm2_5_media\"                   onclick=\"window.open('./chart.html?id_gate=" + gate + "&id_end=" + end[k].id_end + "&type=pm2_5_media&dbpage=webpage" + "\')                    \"></div></td>";
+            string += "<td class=\"cella\">  <div  class=\"chart\"    id=\"chart_" + gate + "_" + end[k].id_end + "_" + "pm10_media\"                    onclick=\"window.open('./chart.html?id_gate=" + gate + "&id_end=" + end[k].id_end + "&type=pm10_media&dbpage=webpage" + "\')                     \"></div></td>";
+            string += "<td class=\"cella\">  <div  class=\"chart\"    id=\"chart_" + gate + "_" + end[k].id_end + "_" + "ozono1_media\"                  onclick=\"window.open('./chart.html?id_gate=" + gate + "&id_end=" + end[k].id_end + "&type=ozono1_media&dbpage=webpage" + "\')                   \"></div></td>";
+            string += "<td class=\"cella\">  <div  class=\"chart\"    id=\"chart_" + gate + "_" + end[k].id_end + "_" + "velocità_del_vento_media\"      onclick=\"window.open('./chart.html?id_gate=" + gate + "&id_end=" + end[k].id_end + "&type=velocità_del_vento_media&dbpage=webpage" + "\')       \"></div></td>";
+
+            string += "<td>  <div  class=\"vento\"   onclick=\"window.open('./chart.html?id_gate=" + gate + "&id_end=" + end[k].id_end + "&type=direzione_del_vento_media&dbpage=webpage" + "\')      \"><img src = \"./immagini/rosa-dei-venti-punta.png\" id=\"direzione_vento_" + gate + "_" + end[k].id_end + "\" class=\"immagine\"></img></div></td>";
+            //string += "<td class=\"cella\">  <div  class=\"chart\"    id=\"chart_" + gate + "_" + end[k].id_end + "_" + "direzione_del_vento_media\"     onclick=\"window.open('./chart.html?id_gate=" + gate + "&id_end=" + end[k].id_end + "&type=direzione_del_vento_media&dbpage=webpage" + "\')      \"></div></td>";
+
+            string += "<td class=\"cella\">  <div  class=\"chart\"    id=\"chart_" + gate + "_" + end[k].id_end + "_" + "quantità_di_pioggia_media\"     onclick=\"window.open('./chart.html?id_gate=" + gate + "&id_end=" + end[k].id_end + "&type=quantità_di_pioggia_media&dbpage=webpage" + "\')      \"></div></td>";
+            string += "</tr>";
+            document.getElementById("tablebody").innerHTML += string;
+            options[k] = [];
+            chart[k] = [];
+
+
+            function getInfoData(type_inf, dbpage, gate, end) {
+                var temp = [];
+                data = requestData("SELECT datatime," + type_inf + " FROM " + dbpage + " WHERE id_gate=" + gate + " AND id_end=" + end + " ORDER BY datatime DESC LIMIT 1000");
+                for (var d in data) {
+                    temp.push({ x: data[d].datatime, y: data[d][type_inf.toString()] });
+                }
+                return temp;
+            }
+
+
+
+            options[k][0] = {
+                Animation: false,
+                visible: true,
+                series: [{
+                    data: getData("RSSI", "SELECT RSSI FROM tab1 WHERE id_gate=" + gate + " AND id_end=" + end[k].id_end + " AND datatime>=" + dateUTcnow + " ORDER BY datatime DESC LIMIT 10")
+                }],
+
+                chart: {
+                    height: '90%',
+                    type: 'bar',
+                    group: 'a',
+                    sparkline: {
+                        enabled: true
+                    },
+                    id: 'RSSI'
+                },
+                plotOptions: {
+                    bar: {
+                        colors: {
+                            ranges: [
+                                {
+                                    from: -600,
+                                    to: -100,
+                                    color: 'rgba(255,0,0,1)',
+                                    borderColor: 'rgba(255,0,0,1)'
+                                },
+                                {
+                                    from: -99,
+                                    to: -50,
+                                    borderColor: 'rgba(0,255,0,1)',
+                                    color: 'rgba(0,255,0,1)'
+                                },
+                                {
+                                    from: -49,
+                                    to: 1000,
+                                    borderColor: 'rgba(0,255,0,1)',
+                                    color: 'rgba(0,255,0,1)'
+                                },
+                            ]
+                        },
+                        columnWidth: '80%',
+                    }
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 1
+
+                },
+                theme: {
+                    monochrome: {
+                        enabled: true,
+                        color: chart_color[0],
+                        shadeTo: 'light',
+                        shadeIntensity: 0.65
+                    }
+                },
+
+                tooltip: {
+                    fixed: {
+                        enabled: false
+                    },
+                    x: {
+                        show: false
+                    },
+                    y: {
+                        title: {
+                            formatter: function (seriesName) {
+                                return ''
+                            }
+                        }
+                    },
+                    marker: {
+                        show: false
+                    }
+                }
+            };
+
+            options[k][1] = {
+                Animation: false,
+                visible: true,
+                series: [{
+                    data: getData("SN", "SELECT SN FROM tab1 WHERE id_gate=" + gate + " AND id_end=" + end[k].id_end + " AND datatime>=" + dateUTcnow + " ORDER BY datatime LIMIT 10")
+                }],
+
+                chart: {
+                    height: '90%',
+                    type: 'bar',
+                    group: 'b',
+                    sparkline: {
+                        enabled: true
+                    },
+                    id: 'SN'
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 1
+
+                },
+                theme: {
+                    monochrome: {
+                        enabled: true,
+                        color: chart_color[1],
+                        shadeTo: 'light',
+                        shadeIntensity: 0.65
+                    }
+                },
+
+                tooltip: {
+                    fixed: {
+                        enabled: false
+                    },
+                    x: {
+                        show: false
+                    },
+                    y: {
+                        title: {
+                            formatter: function (seriesName) {
+                                return ''
+                            }
+                        }
+                    },
+                    marker: {
+                        show: false
+                    }
+                }
+            };
+
+            options[k][2] = {
+                Animation: false,
+                visible: true,
+                series: [{
+                    data: getData("temperatura_interna_media", "SELECT temperatura_interna_media FROM webpage WHERE id_gate=" + gate + " AND id_end=" + end[k].id_end + " AND datatime>=" + dateUTcnow + " ORDER BY datatime LIMIT 30")
+                }],
+                chart: {
+                    height: '90%',
+                    type: 'line',
+                    group: 'c',
+                    sparkline: {
+                        enabled: true
+                    },
+                    id: 'temp int'
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 1
+
+                },
+                theme: {
+                    monochrome: {
+                        enabled: true,
+                        color: chart_color[2],
+                        shadeTo: 'light',
+                        shadeIntensity: 0.65
+                    }
+                },
+
+                tooltip: {
+                    fixed: {
+                        enabled: false
+                    },
+                    x: {
+                        show: false
+                    },
+                    y: {
+                        title: {
+                            formatter: function (seriesName) {
+                                return ''
+                            }
+                        }
+                    },
+                    marker: {
+                        show: false
+                    }
+                }
+            };
+            console.log(options[k][2].series.data);
+
+            options[k][3] = {
+                Animation: false,
+                series: [{
+                    data: getData("temperatura_esterna_media", "SELECT temperatura_esterna_media FROM webpage WHERE id_gate=" + gate + " AND id_end=" + end[k].id_end + " AND datatime>=" + dateUTcnow + " ORDER BY datatime LIMIT 10")
+                }],
+
+                chart: {
+                    height: '90%',
+                    type: 'area',
+                    group: 'd',
+                    sparkline: {
+                        enabled: true
+                    },
+                    id: 'temp ext'
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 1
+                },
+                theme: {
+                    monochrome: {
+                        enabled: true,
+                        color: chart_color[3],
+                        shadeTo: 'light',
+                        shadeIntensity: 0.65
+                    }
+                },
+
+                tooltip: {
+                    fixed: {
+                        enabled: false
+                    },
+                    x: {
+                        show: false
+                    },
+                    y: {
+                        title: {
+                            formatter: function (seriesName) {
+                                return ''
+                            }
+                        }
+                    },
+                    marker: {
+                        show: false
+                    }
+                },
+
+            };
+
+
+
+
+            options[k][4] = {
+                Animation: false,
+                series: [
+                    [getData("umidita_interna_media", "SELECT umidita_interna_media FROM webpage WHERE id_gate=" + gate + " AND id_end=" + end[k].id_end + " AND datatime>=" + dateUTcnow + " ORDER BY datatime DESC LIMIT 1")]
+                ],
+
+                chart: {
+                    height: '90%',
+                    type: 'radialBar',
+                    group: 'f',
+                    sparkline: {
+                        enabled: true
+                    },
+                    id: 'hum ext'
+                },
+                labels: [''],
+                stroke: {
+                    curve: 'smooth',
+                    width: 1
+                },
+                theme: {
+                    monochrome: {
+                        enabled: true,
+                        color: chart_color[5],
+                        shadeTo: 'light',
+                        shadeIntensity: 0.65
+                    }
+                },
+                plotOptions: {
+                    radialBar: {
+                        startAngle: -135,
+                        endAngle: 135,
+                        dataLabels: {
+                            name: {
+                                fontSize: '16px',
+                                color: undefined,
+
+                            },
+                            value: {
+                                offsetY: 6,
+                                fontSize: '15px',
+                                color: undefined,
+                                formatter: function (val) {
+                                    return val + "%";
+                                }
+                            }
+                        }
+                    }
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shade: 'dark',
+                        shadeIntensity: 0.15,
+                        inverseColors: false,
+                        opacityFrom: 1,
+                        opacityTo: 1,
+                        stops: [0, 50, 65, 91]
+                    },
+                },
+                stroke: {
+                    dashArray: 0
+                },
+                tooltip: {
+                    fixed: {
+                        enabled: false
+                    },
+                    x: {
+                        show: false
+                    },
+                    y: {
+                        title: {
+                            formatter: function (seriesName) {
+                                return ''
+                            }
+                        }
+                    },
+                    marker: {
+                        show: false
+                    }
+                }
+            };
+
+
+
+
+            options[k][5] = {
+                Animation: false,
+                series: [
+                    [getData("umidita_esterna_media", "SELECT umidita_esterna_media FROM webpage WHERE id_gate=" + gate + " AND id_end=" + end[k].id_end + " AND datatime>=" + dateUTcnow + " ORDER BY datatime DESC LIMIT 1")]
+                ],
+
+                chart: {
+                    height: '90%',
+                    type: 'radialBar',
+                    group: 'f',
+                    sparkline: {
+                        enabled: true
+                    },
+                    id: 'hum ext'
+                },
+                labels: [''],
+                stroke: {
+                    curve: 'smooth',
+                    width: 1
+                },
+                theme: {
+                    monochrome: {
+                        enabled: true,
+                        color: chart_color[5],
+                        shadeTo: 'light',
+                        shadeIntensity: 0.65
+                    }
+                },
+                plotOptions: {
+                    radialBar: {
+                        startAngle: -135,
+                        endAngle: 135,
+                        dataLabels: {
+                            name: {
+                                fontSize: '16px',
+                                color: undefined,
+
+                            },
+                            value: {
+                                offsetY: 6,
+                                fontSize: '15px',
+                                color: undefined,
+                                formatter: function (val) {
+                                    return val + "%";
+                                }
+                            }
+                        }
+                    }
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shade: 'dark',
+                        shadeIntensity: 0.15,
+                        inverseColors: false,
+                        opacityFrom: 1,
+                        opacityTo: 1,
+                        stops: [0, 50, 65, 91]
+                    },
+                },
+                stroke: {
+                    dashArray: 0
+                },
+                tooltip: {
+                    fixed: {
+                        enabled: false
+                    },
+                    x: {
+                        show: false
+                    },
+                    y: {
+                        title: {
+                            formatter: function (seriesName) {
+                                return ''
+                            }
+                        }
+                    },
+                    marker: {
+                        show: false
+                    }
+                }
+            };
+
+
+            options[k][6] = {
+                Animation: false,
+                series: [{
+                    data: getData("pressione_media", "SELECT pressione_media FROM webpage WHERE id_gate=" + gate + " AND id_end=" + end[k].id_end + " AND datatime>=" + dateUTcnow + " ORDER BY datatime LIMIT 10")
+                }],
+
+                chart: {
+                    height: '90%',
+                    type: 'area',
+                    group: 'g',
+                    sparkline: {
+                        enabled: true
+                    },
+                    id: 'pressure'
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 1
+                },
+                theme: {
+                    monochrome: {
+                        enabled: true,
+                        color: chart_color[6],
+                        shadeTo: 'light',
+                        shadeIntensity: 0.65
+                    }
+                },
+                tooltip: {
+                    fixed: {
+                        enabled: false
+                    },
+                    x: {
+                        show: false
+                    },
+                    y: {
+                        title: {
+                            formatter: function (seriesName) {
+                                return ''
+                            }
+                        }
+                    },
+                    marker: {
+                        show: false
+                    }
+                }
+            };
+
+
+            options[k][7] = {
+                Animation: false,
+                series: [{
+                    data: getData("pm1_media", "SELECT pm1_media FROM webpage WHERE id_gate=" + gate + " AND id_end=" + end[k].id_end + " AND datatime>=" + dateUTcnow + " ORDER BY datatime LIMIT 10")
+                }],
+
+                chart: {
+                    height: '90%',
+                    type: 'area',
+                    group: 'h',
+                    sparkline: {
+                        enabled: true
+                    },
+                    id: 'pm1'
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 1
+                },
+                theme: {
+                    monochrome: {
+                        enabled: true,
+                        color: chart_color[7],
+                        shadeTo: 'light',
+                        shadeIntensity: 0.65
+                    }
+                },
+                tooltip: {
+                    fixed: {
+                        enabled: false
+                    },
+                    x: {
+                        show: false
+                    },
+                    y: {
+                        title: {
+                            formatter: function (seriesName) {
+                                return ''
+                            }
+                        }
+                    },
+                    marker: {
+                        show: false
+                    }
+                }
+            };
+
+
+            options[k][8] = {
+                Animation: false,
+                series: [{
+                    data: getData("pm2_5_media", "SELECT pm2_5_media FROM webpage WHERE id_gate=" + gate + " AND id_end=" + end[k].id_end + " AND datatime>=" + dateUTcnow + " ORDER BY datatime LIMIT 10")
+                }],
+                chart: {
+                    height: '90%',
+                    type: 'area',
+                    group: 'i',
+                    sparkline: {
+                        enabled: true
+                    },
+                    id: 'pm2.5'
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 1
+                },
+                theme: {
+                    monochrome: {
+                        enabled: true,
+                        color: chart_color[8],
+                        shadeTo: 'light',
+                        shadeIntensity: 0.65
+                    }
+                },
+                tooltip: {
+                    fixed: {
+                        enabled: false
+                    },
+                    x: {
+                        show: false
+                    },
+                    y: {
+                        title: {
+                            formatter: function (seriesName) {
+                                return ''
+                            }
+                        }
+                    },
+                    marker: {
+                        show: false
+                    }
+                }
+            };
+
+
+
+            options[k][9] = {
+                Animation: false,
+                series: [{
+                    data: getData("pm10_media", "SELECT pm10_media FROM webpage WHERE id_gate=" + gate + " AND id_end=" + end[k].id_end + " AND datatime>=" + dateUTcnow + " ORDER BY datatime LIMIT 10")
+                }],
+                chart: {
+                    height: '90%',
+                    type: 'area',
+                    group: 'l',
+                    sparkline: {
+                        enabled: true
+                    },
+                    id: 'pm10'
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 1
+                },
+                theme: {
+                    monochrome: {
+                        enabled: true,
+                        color: chart_color[9],
+                        shadeTo: 'light',
+                        shadeIntensity: 0.65
+                    }
+                },
+                tooltip: {
+                    fixed: {
+                        enabled: false
+                    },
+                    x: {
+                        show: false
+                    },
+                    y: {
+                        title: {
+                            formatter: function (seriesName) {
+                                return ''
+                            }
+                        }
+                    },
+                    marker: {
+                        show: false
+                    }
+                }
+            };
+
+
+            options[k][10] = {
+                Animation: false,
+                series: [{
+                    data: getData("ozono1_media", "SELECT ozono1_media FROM webpage WHERE id_gate=" + gate + " AND id_end=" + end[k].id_end + " AND datatime>=" + dateUTcnow + " ORDER BY datatime LIMIT 10")
+                }],
+                chart: {
+                    height: '90%',
+                    type: 'area',
+                    group: 'm',
+                    sparkline: {
+                        enabled: true
+                    },
+                    id: 'ozono1'
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 1
+                },
+                theme: {
+                    monochrome: {
+                        enabled: true,
+                        color: chart_color[10],
+                        shadeTo: 'light',
+                        shadeIntensity: 0.65
+                    }
+                },
+                tooltip: {
+                    fixed: {
+                        enabled: false
+                    },
+                    x: {
+                        show: false
+                    },
+                    y: {
+                        title: {
+                            formatter: function (seriesName) {
+                                return ''
+                            }
+                        }
+                    },
+                    marker: {
+                        show: false
+                    }
+                }
+            };
+
+            options[k][11] = {
+                Animation: false,
+                series: [{
+                    data: getData("velocità_del_vento_media", "SELECT velocità_del_vento_media FROM webpage WHERE id_gate=" + gate + " AND id_end=" + end[k].id_end + " AND datatime>=" + dateUTcnow + " ORDER BY datatime LIMIT 10")
+                }],
+                chart: {
+                    height: '90%',
+                    type: 'area',
+                    group: 'n',
+                    sparkline: {
+                        enabled: true
+                    },
+                    id: "velocità_del_vento"
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 1
+                },
+                theme: {
+                    monochrome: {
+                        enabled: true,
+                        color: chart_color[11],
+                        shadeTo: 'light',
+                        shadeIntensity: 0.65
+                    }
+                },
+                tooltip: {
+                    fixed: {
+                        enabled: false
+                    },
+                    x: {
+                        show: false
+                    },
+                    y: {
+                        title: {
+                            formatter: function (seriesName) {
+                                return ''
+                            }
+                        }
+                    },
+                    marker: {
+                        show: false
+                    }
+                }
+            };
+
+
+            /*
+            var temp_arr = [];
+            for (var i = 0; i < 360; i++) temp_arr[i] = 0;
+            var val = Math.ceil(getData("direzione_del_vento_media", "SELECT direzione_del_vento_media FROM webpage WHERE id_gate=" + gate + " AND id_end=" + end[k].id_end + " AND datatime>=" + dateUTcnow + " ORDER BY datatime DESC LIMIT 1"));
+            if (val <= 0) val = 0;
+            if (val >= 359) val = 360
+
+            for (var i = 0; i < 101; i++) {
+                if (val - i >= 0) {
+                    if (100 - (1 * i) >= 0) {
+                        temp_arr[val - i] = 100 - (0.75 * i);
+                    }
+                }
+                else {
+                    if (100 - (1 * i) >= 0) {
+                        temp_arr[360 - (i - val)] = 100 - (0.75 * i);
+                    }
+                }
+                if (val + i <= 359) {
+                    if (100 - (1 * i) >= 0) temp_arr[val + i] = 100 - (0.75 * i);
+                }
+                else {
+                    if (100 - (1 * i) >= 0) temp_arr[0 + (i - val)] = 100 - (0.75 * i);
+                }
+           }
+            temp_arr[val] = 0;
+
+
+            options[k][12] = {
+                Animation: false,
+                series: [{
+                    data: temp_arr,
+                    color: "rgba(0,255,0,1)"
+                }],
+                chart: {
+                    type: 'radar',
+                    group: 'o',
+                    sparkline: {
+                        enabled: true
+                    },
+                    id: "direzione_del_vento"
+                },
+                xaxis: {
+                    categories: []
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 1
+                },
+                theme: {
+                    monochrome: {
+                        enabled: true,
+                        color: chart_color[12],
+                        shadeTo: 'light',
+                        shadeIntensity: 0.65
+                    }
+                },
+                tooltip: {
+                    fixed: {
+                        enabled: false
+                    },
+                    x: {
+                        show: false
+                    },
+                    y: {
+                        title: {
+                            formatter: function (seriesName) {
+                                return ''
+                            }
+                        }
+                    },
+                    marker: {
+                        show: false
+                    }
+                },
+                markers: {
+                    size: 0
+                }
+            };
+            */
+
+            //dal bo davide
+            Math.ceil(getData("direzione_del_vento_media", "SELECT direzione_del_vento_media FROM webpage WHERE id_gate=" + gate + " AND id_end=" + end[k].id_end + " AND datatime>=" + dateUTcnow + " ORDER BY datatime DESC LIMIT 1"));
+
+            options[k][13] = {
+                Animation: false,
+                series: [{
+                    data: getData("quantità_di_pioggia_media", "SELECT quantità_di_pioggia_media FROM webpage WHERE id_gate=" + gate + " AND id_end=" + end[k].id_end + " AND datatime>=" + dateUTcnow + " ORDER BY datatime LIMIT 10")
+                }],
+                chart: {
+                    height: '90%',
+                    type: 'area',
+                    group: 'p',
+                    sparkline: {
+                        enabled: true
+                    },
+                    id: "quantità_di_pioggia"
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 1
+                },
+                theme: {
+                    monochrome: {
+                        enabled: true,
+                        color: chart_color[13],
+                        shadeTo: 'light',
+                        shadeIntensity: 0.65
+                    }
+                },
+                tooltip: {
+                    fixed: {
+                        enabled: false
+                    },
+                    x: {
+                        show: false
+                    },
+                    y: {
+                        title: {
+                            formatter: function (seriesName) {
+                                return ''
+                            }
+                        }
+                    },
+                    marker: {
+                        show: false
+                    }
+                }
+            };
+
+
+        }
+
+
+        for (var k in end) {
+            chart[k][0] = new ApexCharts(document.querySelector("#chart_" + gate + "_" + end[k].id_end + "_" + "RSSI"), options[k][0]);
+            chart[k][1] = new ApexCharts(document.querySelector("#chart_" + gate + "_" + end[k].id_end + "_" + "SN"), options[k][1]);
+            chart[k][2] = new ApexCharts(document.querySelector("#chart_" + gate + "_" + end[k].id_end + "_" + "temperatura_interna_media"), options[k][2]);
+            chart[k][3] = new ApexCharts(document.querySelector("#chart_" + gate + "_" + end[k].id_end + "_" + "temperatura_esterna_media"), options[k][3]);
+            chart[k][4] = new ApexCharts(document.querySelector("#chart_" + gate + "_" + end[k].id_end + "_" + "umidita_interna_media"), options[k][4]);
+            chart[k][5] = new ApexCharts(document.querySelector("#chart_" + gate + "_" + end[k].id_end + "_" + "umidita_esterna_media"), options[k][5]);
+            chart[k][6] = new ApexCharts(document.querySelector("#chart_" + gate + "_" + end[k].id_end + "_" + "pressione_media"), options[k][6]);
+            chart[k][7] = new ApexCharts(document.querySelector("#chart_" + gate + "_" + end[k].id_end + "_" + "pm1_media"), options[k][7]);
+            chart[k][8] = new ApexCharts(document.querySelector("#chart_" + gate + "_" + end[k].id_end + "_" + "pm2_5_media"), options[k][8]);
+            chart[k][9] = new ApexCharts(document.querySelector("#chart_" + gate + "_" + end[k].id_end + "_" + "pm10_media"), options[k][9]);
+            chart[k][10] = new ApexCharts(document.querySelector("#chart_" + gate + "_" + end[k].id_end + "_" + "ozono1_media"), options[k][10]);
+            chart[k][11] = new ApexCharts(document.querySelector("#chart_" + gate + "_" + end[k].id_end + "_" + "velocità_del_vento_media"), options[k][11]);
+            //chart[k][12] = new ApexCharts(document.querySelector("#chart_" + gate + "_" + end[k].id_end + "_" + "direzione_del_vento_media"), options[k][12]);
+            document.querySelector("#direzione_vento_" + gate + "_" + end[k].id_end).style.transform = "rotate(" + Math.ceil(getData("direzione_del_vento_media", "SELECT direzione_del_vento_media FROM webpage WHERE id_gate=" + gate + " AND id_end=" + end[k].id_end + " AND datatime>=" + dateUTcnow + " ORDER BY datatime DESC LIMIT 1")) + "deg)";
+            chart[k][13] = new ApexCharts(document.querySelector("#chart_" + gate + "_" + end[k].id_end + "_" + "quantità_di_pioggia_media"), options[k][13]);
+
+            chart[k][0].render()
+            chart[k][1].render();
+            chart[k][2].render();
+            chart[k][3].render();
+            chart[k][4].render();
+            chart[k][5].render();
+            chart[k][6].render();
+            chart[k][7].render();
+            chart[k][8].render();
+            chart[k][9].render()
+            chart[k][10].render();
+            chart[k][11].render();
+            //chart[k][12].render();
+            chart[k][13].render();
+        }
+    </script>
+
+
+</body>
+
+</html>
