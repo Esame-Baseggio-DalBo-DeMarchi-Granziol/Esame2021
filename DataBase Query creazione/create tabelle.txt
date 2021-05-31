@@ -1,0 +1,89 @@
+CREATE TABLE tab1(
+id_gate int NOT NULL,                     
+id_end  int NOT NULL,
+id_trasmissione INT AUTO_INCREMENT,
+letture int NOT NULL,                     
+datatime datetime,                
+RSSI float NOT NULL,
+SN float NOT NULL,
+BatteryCurrent float,
+BatteryVoltage float,
+PRIMARY KEY(id_trasmissione)
+);
+
+CREATE TABLE WebPage (
+
+id_gate int NOT NULL,                     
+id_end  int NOT NULL,                    
+datatime datetime NOT NULL,
+id_tx int NOT NULL,
+gyroX_media float,
+gyroX_deviazione float,
+gyroY_media float,
+gyroY_deviazione float,
+gyroZ_media float,
+gyroZ_deviazione float,
+accellX_media float,
+accellX_deviazione float,
+accellY_media float,
+accellY_deviazione float,
+accellZ_media float,
+accellZ_deviazione float,
+magX_media float,
+magX_deviazione float,
+magY_media float,
+magY_deviazione float,
+magZ_media float,
+magZ_deviazione  float,       
+temperatura_interna_media float,
+temperatura_interna_deviazione float,
+temperatura_esterna_media float,
+temperatura_esterna_deviazione float,
+umidita_interna_media float,
+umidita_interna_deviazione float,
+umidita_esterna_media float,
+umidita_esterna_deviazione float,
+pressione_media float,
+pressione_deviazione  float,
+pm1_media float,
+pm1_deviazione float,
+pm2_5_media float,
+pm2_5_deviazione float,
+pm10_media float,
+pm10_deviazione float,
+ozono1_media float,
+ozono1_deviazione float,
+ozono2_media float,
+ozono2_deviazione float,
+ozono3_media float,
+ozono3_deviazione float,
+ozono4_media float,
+ozono4_deviazione float,
+velocità_del_vento_media float,
+velocità_del_vento_deviazione float,
+direzione_del_vento_media float,
+direzione_del_vento_deviazione float,
+quantità_di_pioggia_media float,
+quantità_di_pioggia_deviazione float,
+FOREIGN KEY (id_tx) REFERENCES tab1(id_trasmissione), 
+CONSTRAINT PK_WebPage PRIMARY KEY(id_gate, id_end, datatime)
+
+);
+
+
+CREATE TABLE GateWay (
+
+id_gate int NOT NULL,                    
+longitudine float,
+latlatitudine float,
+PRIMARY KEY (id_gate)
+);
+
+CREATE TABLE tab2 (
+
+id_gate int NOT NULL,                                           
+id_end  int NOT NULL,                    
+longitudine float,
+latatitudine float,
+CONSTRAINT PK_tab2 PRIMARY KEY(id_gate, id_end)
+);
