@@ -3,8 +3,8 @@
 $login = 
     [
         "host" =>"localhost",
-        "user" =>"a",
-        "password" => "Baseggio02", 
+        "user" =>"your_user",
+        "password" => "your_password", 
         "name" =>"testweb"
     ];
 
