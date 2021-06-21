@@ -339,9 +339,9 @@ uint16_t cypher(uint16_t _plaintext)
   uint16_t plaintext = _plaintext;
   uint16_t temp[16] = {0};
   uint16_t arr[16] = {0};
-  for (int k = 0; k <= 0; k++)
+  for (int k = 0; k <= NUMBER_PBOX_SBOX_KEYS; k++)
   {
-    for (int p = 0; p <= 0; p++) {
+    for (int p = 0; p <= NUMBER_XOR_KEYS; p++) {
       plaintext ^= XOR[p];  //XOR
       for (int i = 15; i >= 0; i--) temp[i] = (uint16_t)bitRead(plaintext, P_BOX[k][i]); //PBOX
       uint16_t cypher = 0;
@@ -361,9 +361,9 @@ uint16_t decypher(uint16_t _cypher)
   uint16_t arr_temp_16[16] = {0};
   uint16_t temp = 0;
   uint16_t decypher = 0;
-  for (int j = 0; j >= 0 ; j--)
+  for (int j = NUMBER_PBOX_SBOX_KEYS; j >= 0 ; j--)
   {
-    for (int p = 0; p >= 0; p--)
+    for (int p = NUMBER_XOR_KEYS; p >= 0; p--)
     {
       for (int k = 0; k < 4 ; k++) {
         for (int i = 0; i < 16; i++) {
